@@ -16,7 +16,8 @@ CACHE_DIR=$2
 # use the latest ruby (1.9) in stackato
 export PATH=/opt/rubies/current/bin:$PATH
 
-CACHED_DIRS="rubygems"
+#=== disabled for now
+#CACHED_DIRS="rubygems"
 
 mkdir -p $CACHE_DIR
 
@@ -32,8 +33,9 @@ function puts-step (){
 
 function bundle_install {
     unset RUBYOPT BUNDLE_BIN_PATH GEM_PATH GEM_HOME BUNDLE_GEMFILE
-    puts-step "Installing gem dependencies"
-    bundle install --path rubygems 2>&1 | indent
+    puts-step "Installing gem dependencies (bundle install --local --development)"
+    #bundle install --path rubygems 2>&1 | indent
+    bundle install --local --development 2>&1 | indent
 }
 
 function write_database_yml {
@@ -62,10 +64,10 @@ function create_asset_plugin {
 cd $BUILD_DIR
 
 
-# Restore old artifacts from the cache.
-for dir in $CACHED_DIRS; do
-  cp -R $CACHE_DIR/$dir . &> /dev/null || true
-done
+# # Restore old artifacts from the cache.
+# for dir in $CACHED_DIRS; do
+#   cp -R $CACHE_DIR/$dir . &> /dev/null || true
+# done
 
 
 bundle_install
@@ -75,8 +77,8 @@ db_migrate
 create_asset_plugin
 
 
-# Store new artifacts in cache.
-for dir in $CACHED_DIRS; do
-  rm -rf $CACHE_DIR/$dir
-  cp -R $dir $CACHE_DIR/
-done
+# # Store new artifacts in cache.
+# for dir in $CACHED_DIRS; do
+#   rm -rf $CACHE_DIR/$dir
+#   cp -R $dir $CACHE_DIR/
+# done
