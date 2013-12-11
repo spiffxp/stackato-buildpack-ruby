@@ -19,7 +19,7 @@ File.open(ymlfile, 'w') do |fh|
   fh.puts("#{environment}:
   adapter: #{adapter}
   encoding: utf8
-  pool: 5
+  pool: 20
   reconnect: false
   host: #{uri.host}
   port: #{uri.port}
