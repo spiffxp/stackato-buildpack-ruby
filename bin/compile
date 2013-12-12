@@ -18,6 +18,11 @@ export PATH=/opt/rubies/current/bin:$PATH
 
 CACHED_DIRS="rubygems"
 
+
+function puts-step (){
+  echo "-----> $@"
+}
+
 USE_LOCAL_CACHE="false"
 if [ -d "${ROOT_DIR}/vendor/cache" ]; then
   puts-step "Found vendor/cache"
@@ -34,10 +39,6 @@ mkdir -p $CACHE_DIR
 indent() {
   RE="s/^/       /"
   [ $(uname) == "Darwin" ] && sed -l "$RE" || sed -u "$RE"
-}
-
-function puts-step (){
-  echo "-----> $@"
 }
 
 function bundle_install_local {
