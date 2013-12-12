@@ -18,6 +18,12 @@ export PATH=/opt/rubies/current/bin:$PATH
 
 CACHED_DIRS="rubygems"
 
+USE_LOCAL_CACHE="false"
+if [ -d "vendor/cache" ]; then
+  puts-step "Found vendor/cache"
+  USE_LOCAL_CACHE="true"
+fi
+
 mkdir -p $CACHE_DIR
 
 # Syntax sugar.
@@ -68,25 +74,26 @@ function create_asset_plugin {
 cd $BUILD_DIR
 
 
-# # Restore old artifacts from the cache.
-for dir in $CACHED_DIRS; do
-  cp -R $CACHE_DIR/$dir . &> /dev/null || true
-done
-
-if [ -d "vendor/cache" ]; then
-  puts-step "Found vendor/cache"
+if [ "$USE_LOCAL_CACHE" = "true" ]; then
   bundle_install_local
 else
+  # Restore old artifacts from the cache.
+  for dir in $CACHED_DIRS; do
+    cp -R $CACHE_DIR/$dir . &> /dev/null || true
+  done
   bundle_install_with_cache
 fi
+
 write_database_yml
 write_boot_config
 db_migrate
 create_asset_plugin
 
 
-# Store new artifacts in cache.
-for dir in $CACHED_DIRS; do
-  rm -rf $CACHE_DIR/$dir
-  cp -R $dir $CACHE_DIR/
-done
+if [ "$USE_LOCAL_CACHE" != "true" ]; then
+  # Store new artifacts in cache.
+  for dir in $CACHED_DIRS; do
+    rm -rf $CACHE_DIR/$dir
+    cp -R $dir $CACHE_DIR/
+  done
+fi
