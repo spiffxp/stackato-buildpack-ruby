@@ -32,8 +32,8 @@ function puts-step (){
 
 function bundle_install_local {
     unset RUBYOPT BUNDLE_BIN_PATH GEM_PATH GEM_HOME BUNDLE_GEMFILE
-    puts-step "Installing local gems dependencies (bundle install --local --development)"
-    bundle install --local --development 2>&1 | indent
+    puts-step "Installing local gems dependencies (bundle install --local --deployment)"
+    bundle install --local --deployment 2>&1 | indent
 }
 
 function bundle_install_with_cache {
