@@ -30,9 +30,15 @@ function puts-step (){
   echo "-----> $@"
 }
 
-function bundle_install {
+function bundle_install_local {
     unset RUBYOPT BUNDLE_BIN_PATH GEM_PATH GEM_HOME BUNDLE_GEMFILE
-    puts-step "Installing gem dependencies"
+    puts-step "Installing local gems dependencies (bundle install --local --development)"
+    bundle install --local --development 2>&1 | indent
+}
+
+function bundle_install_with_cache {
+    unset RUBYOPT BUNDLE_BIN_PATH GEM_PATH GEM_HOME BUNDLE_GEMFILE
+    puts-step "Installing gem dependencies (bundle install --path rubygems)"
     bundle install --path rubygems 2>&1 | indent
 }
 
@@ -62,13 +68,17 @@ function create_asset_plugin {
 cd $BUILD_DIR
 
 
-# Restore old artifacts from the cache.
+# # Restore old artifacts from the cache.
 for dir in $CACHED_DIRS; do
   cp -R $CACHE_DIR/$dir . &> /dev/null || true
 done
 
-
-bundle_install
+if [ -d "vendor/cache" ]; then
+  puts-step "Found vendor/cache"
+  echo bundle_install_local
+else
+  echo bundle_install_with_cache
+fi
 write_database_yml
 write_boot_config
 db_migrate
