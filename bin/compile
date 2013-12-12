@@ -19,9 +19,13 @@ export PATH=/opt/rubies/current/bin:$PATH
 CACHED_DIRS="rubygems"
 
 USE_LOCAL_CACHE="false"
-if [ -d "vendor/cache" ]; then
+if [ -d "${ROOT_DIR}/vendor/cache" ]; then
   puts-step "Found vendor/cache"
   USE_LOCAL_CACHE="true"
+else
+  puts-step "root: ${ROOT_DIR}"
+  puts-step `pwd`
+  puts-step `ls`
 fi
 
 mkdir -p $CACHE_DIR
