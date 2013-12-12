@@ -75,9 +75,9 @@ done
 
 if [ -d "vendor/cache" ]; then
   puts-step "Found vendor/cache"
-  echo bundle_install_local
+  bundle_install_local
 else
-  echo bundle_install_with_cache
+  bundle_install_with_cache
 fi
 write_database_yml
 write_boot_config
