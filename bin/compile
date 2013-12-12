@@ -22,6 +22,10 @@ USE_LOCAL_CACHE="false"
 if [ -d "${ROOT_DIR}/vendor/cache" ]; then
   puts-step "Found vendor/cache"
   USE_LOCAL_CACHE="true"
+else
+  puts-step "root: ${ROOT_DIR}"
+  puts-step `pwd`
+  puts-step `ls`
 fi
 
 mkdir -p $CACHE_DIR
