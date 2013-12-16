@@ -24,13 +24,11 @@ function puts-step (){
 }
 
 USE_LOCAL_CACHE="false"
-if [ -d "${ROOT_DIR}/vendor/cache" ]; then
+if [ -d "${BUILD_DIR}/vendor/cache" ]; then
   puts-step "Found vendor/cache"
   USE_LOCAL_CACHE="true"
 else
-  puts-step "root: ${ROOT_DIR}"
-  puts-step `pwd`
-  puts-step `ls`
+  puts-step "build-dir: ${BUILD_DIR}"
 fi
 
 mkdir -p $CACHE_DIR
@@ -44,13 +42,13 @@ indent() {
 function bundle_install_local {
     unset RUBYOPT BUNDLE_BIN_PATH GEM_PATH GEM_HOME BUNDLE_GEMFILE
     puts-step "Installing local gems dependencies (bundle install --local --deployment)"
-    bundle install --local --deployment 2>&1 | indent
+    bundle install --verbose --local --deployment 2>&1 | indent
 }
 
 function bundle_install_with_cache {
     unset RUBYOPT BUNDLE_BIN_PATH GEM_PATH GEM_HOME BUNDLE_GEMFILE
     puts-step "Installing gem dependencies (bundle install --path rubygems)"
-    bundle install --path rubygems 2>&1 | indent
+    bundle install --verbose --path rubygems 2>&1 | indent
 }
 
 function write_database_yml {
