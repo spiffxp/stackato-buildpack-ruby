@@ -14,12 +14,13 @@ adapter = if uri.scheme == "mysql"
 _, _, database = uri.path.rpartition "/"
 
 environment = ENV['RAILS_ENV'] || "production"
+pool = ENV['RAILS_DATABASE_POOL'] || 20
 
 File.open(ymlfile, 'w') do |fh|
   fh.puts("#{environment}:
   adapter: #{adapter}
   encoding: utf8
-  pool: 20
+  pool: #{pool}
   reconnect: false
   host: #{uri.host}
   port: #{uri.port}
