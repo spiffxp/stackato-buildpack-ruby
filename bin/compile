@@ -77,14 +77,20 @@ function create_asset_plugin {
 cd $BUILD_DIR
 
 
-if [ "$USE_LOCAL_CACHE" = "true" ]; then
-  bundle_install_local
+use_bundle_hack=false
+if $use_bundle_hack; then
+  echo "using bundler"
+  if [ "$USE_LOCAL_CACHE" = "true" ]; then
+    bundle_install_local
+  else
+    # Restore old artifacts from the cache.
+    for dir in $CACHED_DIRS; do
+      cp -R $CACHE_DIR/$dir . &> /dev/null || true
+    done
+    bundle_install_with_cache
+  fi
 else
-  # Restore old artifacts from the cache.
-  for dir in $CACHED_DIRS; do
-    cp -R $CACHE_DIR/$dir . &> /dev/null || true
-  done
-  bundle_install_with_cache
+  echo "skipping bundler"
 fi
 
 write_database_yml
